@@ -122,7 +122,10 @@ class Sugarcrm:
             raise SugarError({'name': 'Empty Result',
                               'description': 'No data from SugarCRM.',
                               'number': 0})
-        result = json.loads(response.decode('utf-8'))
+        try:
+            result = json.loads(response.decode('utf-8'))
+        except:
+            raise SugarError(response)
         if is_error(result):
             raise SugarError(result)
         return result
