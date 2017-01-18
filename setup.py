@@ -7,7 +7,7 @@
 
 from distutils.core import setup
 
-version = '0.3.2'
+version = '0.3.3'
 
 PACKAGES = ['sugarcrm']
 
@@ -15,9 +15,9 @@ PACKAGES = ['sugarcrm']
 setup(name = 'sugarcrm',
       version = version,
       description = "SugarCRM Python library",
-      author = "Daniel Casper, Brooks Internet Software, Inc.",
+      author = "Daniel Casper, et al",
       author_email = "dancasper@gmail.com",
-      url = "http://github.com/sugarcrm/python_webservices_library",
+      url = "http://github.com/dvska/sugarcrm",
       classifiers = ["Programming Language :: Python",
                      "Inteded Audience :: Developers",
                      "Topic :: Office/Business"],
