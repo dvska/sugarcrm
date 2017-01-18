@@ -1,5 +1,6 @@
 from __future__ import unicode_literals
 import itertools
+import logging
 
 import six
 from six.moves import html_parser
@@ -7,6 +8,8 @@ from .sugarentry import SugarEntry
 from collections import deque, defaultdict
 
 HTMLP = html_parser.HTMLParser()
+
+log = logging.getLogger(__name__)
 
 class SugarModule:
     """Defines a SugarCRM module.
@@ -40,8 +43,7 @@ class SugarModule:
         # which has no copy method.  Fixing to provide an empty default.
         self._relationships = (result['link_fields'] or {}).copy()
 
-
-    def _search(self, query_str, start = 0, total = 20, fields = None, links_to_names = None, query = None):
+    def _search(self, query_str, start=0, total=20, fields=None, links_to_names=None):
         """
           Return a dictionary of records as well as pertinent query
           statistics.
@@ -59,7 +61,7 @@ class SugarModule:
         if fields is None:
             fields = []
         if links_to_names is None:
-          links_to_names = []
+            links_to_names = []
         if 'id' not in fields:
             fields.append('id')
         if 'name' not in fields:
@@ -71,13 +73,14 @@ class SugarModule:
         offset = 0
         while len(entry_list) < total:
             resp_data = self._connection.get_entry_list(self._name,
-                            query_str, '', start + offset, fields,
-                            links_to_names, total - len(entry_list), 0)
+                                                        query_str, '', start + offset, fields,
+                                                        links_to_names, total - len(entry_list), 0)
             if resp_data['total_count']:
                 try:
                     result['total'] = int(resp_data['total_count'], 10)
                 except TypeError as e:
-                    print(resp_data)
+                    log.error(resp_data)
+                    log.exception(e)
             else:
                 result['total'] = 0
             if resp_data['result_count'] == 0:
@@ -106,8 +109,7 @@ class SugarModule:
         result['entries'] = entry_list
         return result
 
-
-    def query(self, fields = None, links_to_names = None):
+    def query(self, fields=None, links_to_names=None):
         """
         Return a QueryList object for this SugarModule.
 
@@ -116,9 +118,9 @@ class SugarModule:
         object.
         """
 
-        return QueryList(self, fields = fields, links_to_names = links_to_names)
+        return QueryList(self, fields=fields, links_to_names=links_to_names)
 
-    def search(self, value, offset = 0, maxresults = 1000, user = '', fields = None, unifiedonly = True, favorites = False):
+    def search(self, value, offset=0, maxresults=1000, user='', fields=None, unifiedonly=True, favorites=False):
         """
         Attempt to search for matching records for this module.
         """
@@ -139,11 +141,10 @@ class SugarModule:
         return results
 
 
-
 class QueryList:
     """Query a SugarCRM module for specific entries."""
 
-    def __init__(self, module, query = '', fields = None, links_to_names = None):
+    def __init__(self, module, query='', fields=None, links_to_names=None):
         """Constructor for QueryList.
 
         Keyword arguments:
@@ -189,7 +190,6 @@ class QueryList:
                                          index.stop,
                                          index.step))
 
-
     def _build_query(self, **query):
         """Build the API query string.
         """
@@ -232,7 +232,6 @@ class QueryList:
 
         return q_str
 
-
     def filter(self, **query):
         """Filter this QueryList, returning a new QueryList.
 
@@ -251,9 +250,8 @@ class QueryList:
 
         return QueryList(self._module,
                          query,
-                         fields = self._fields,
-                         links_to_names = self._links_to_names)
-
+                         fields=self._fields,
+                         links_to_names=self._links_to_names)
 
     def exclude(self, **query):
         """Filter this QueryList, returning a new QueryList, as in filter(),
@@ -267,9 +265,8 @@ class QueryList:
 
         return QueryList(self._module,
                          query,
-                         fields = self._fields,
-                         links_to_names = self._links_to_names)
-
+                         fields=self._fields,
+                         links_to_names=self._links_to_names)
 
     def __len__(self):
         if self._total == -1:

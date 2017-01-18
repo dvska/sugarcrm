@@ -1,5 +1,6 @@
 import unittest
 import sys
+
 sys.path.insert(1, "..")
 
 import sugarcrm
@@ -9,21 +10,19 @@ import sugarcrm_config
 class LoginTest(unittest.TestCase):
     def test_login(self):
         response = sugarcrm.Sugarcrm(sugarcrm_config.url,
-                                        sugarcrm_config.username,
-                                        sugarcrm_config.password)
+                                     sugarcrm_config.username,
+                                     sugarcrm_config.password)
         self.assertNotEqual(response._session, '')
 
 
 class BaseTests(unittest.TestCase):
-
     def setUp(self):
         self._conn = sugarcrm.Sugarcrm(sugarcrm_config.url,
-                                        sugarcrm_config.username,
-                                        sugarcrm_config.password)
+                                       sugarcrm_config.username,
+                                       sugarcrm_config.password)
 
 
 class BasicTesting(BaseTests):
-
     def test_get_module_fields(self):
         response = self._conn.get_module_fields(sugarcrm_config.test_module)
         self.assertIn('module_fields', list(response.keys()))
@@ -36,11 +35,10 @@ class BasicTesting(BaseTests):
     def test_get_available_modules(self):
         response = self._conn.get_available_modules()
         self.assertIn(sugarcrm_config.test_module, [module['module_key'] for
-                                            module in response['modules']])
+                                                    module in response['modules']])
 
 
 class EntryTesting(BaseTests):
-
     def setUp(self):
         BaseTests.setUp(self)
 
@@ -58,11 +56,11 @@ class EntryTesting(BaseTests):
         self._contact.save()
 
         search_result = self._conn.modules['Contacts'].query().filter(
-                                            id__exact = self._contact['id'])
+            id__exact=self._contact['id'])
         contact = search_result[0]
 
         self.assertEqual(self._contact['first_name'],
-                            contact['first_name'])
+                         contact['first_name'])
 
     def test_relationship(self):
         accounts = self._conn.modules['Accounts']

@@ -6,13 +6,15 @@
 
 from six.moves import urllib
 import hashlib
+
 try:
-    import simplejson as json # Needs to be installed manually
+    import simplejson as json  # Needs to be installed manually
 except ImportError:
-    import json # Works with python 2.7+
+    import json  # Works with python 2.7+
 
 from .sugarerror import SugarError, SugarUnhandledException, is_error
 from .sugarmodule import *
+
 
 class Sugarcrm:
     """Sugarcrm main interface class.
@@ -21,7 +23,7 @@ class Sugarcrm:
     server.
     """
 
-    def __init__(self, url, username, password, is_ldap_member = False):
+    def __init__(self, url, username, password, is_ldap_member=False):
         """Constructor for Sugarcrm connection.
 
         Keyword arguments:
@@ -59,13 +61,13 @@ class Sugarcrm:
                 def f(*args):
                     try:
                         result = self._sendRequest(method_name,
-                                              [self._session] + list(args))
+                                                   [self._session] + list(args))
                     except SugarError as error:
                         if error.is_invalid_session:
                             # Try to recover if session ID was lost
                             self._login()
                             result = self._sendRequest(method_name,
-                                              [self._session] + list(args))
+                                                       [self._session] + list(args))
                         elif error.is_missing_module:
                             return None
                         elif error.is_null_response:
@@ -79,14 +81,17 @@ class Sugarcrm:
                                                            error.description))
 
                     return result
+
                 f.__name__ = method_name
                 return f
+
             self.__dict__[method] = gen(method)
 
         # Add modules containers
         self.modules = {}
         self.rst_modules = dict((m['module_key'], m)
                                 for m in self.get_available_modules()['modules'])
+
     def __getitem__(self, key):
         if key not in self.rst_modules:
             raise KeyError("Invalid Key '%s'" % key)
@@ -109,7 +114,7 @@ class Sugarcrm:
 
         data = json.dumps(data)
         args = {'method': method, 'input_type': 'json',
-                'response_type' : 'json', 'rest_data' : data}
+                'response_type': 'json', 'rest_data': data}
         params = urllib.parse.urlencode(args).encode('utf-8')
         response = urllib.request.urlopen(self._url, params)
         response = response.read().strip()
@@ -155,7 +160,7 @@ class Sugarcrm:
         # Required for Sugar Bug 32064.
         if main._module._name == 'ProductBundles':
             args.append([[{'name': 'product_index',
-                          'value': '%d' % (i + 1)}] for i in range(len(secondary))])
+                           'value': '%d' % (i + 1)}] for i in range(len(secondary))])
         return self.set_relationships(*args)
 
     @property

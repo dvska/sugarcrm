@@ -1,10 +1,10 @@
-
 #    Copyright 2012 Luis Barrueco
 #
 #    This file is part of sugarcrm/python_webservices_library.
 #
 
 from __future__ import print_function, unicode_literals
+
 import sugarcrm
 
 # This is the URL for the v4 REST API in your SugarCRM server.
@@ -35,8 +35,8 @@ for contact in query[:10]:
 
 # We define a new query, but this time we specify a couple of query exclusions.
 query = conn['Contacts'].query()
-new_query = query.exclude(last_name__exact = 'Bassler')
-new_query = new_query.exclude(first_name__exact = 'Morris')
+new_query = query.exclude(last_name__exact='Bassler')
+new_query = new_query.exclude(first_name__exact='Morris')
 for contact in new_query[:10]:
     print(' '.join(contact['first_name', 'last_name']))
 
@@ -55,7 +55,7 @@ for contact in new_query[:10]:
 # This new query has a filter. Please notice that the filter parameter is the
 # field name in the SugarCRM module, followed by a double underscore, and then
 # an operator (it can be 'exact', 'contains', 'gt', 'gte', 'lt', 'lte' or 'in').
-new_query = query.filter(last_name__contains = 'ass')
+new_query = query.filter(last_name__contains='ass')
 for contact in new_query[:10]:
     print(' '.join(contact['first_name', 'last_name']))
 
@@ -65,7 +65,7 @@ for contact in new_query[:10]:
 # Blake Cassity
 # Ann Hassett
 
-new_query = query.filter(last_name__in = ['Bassler', 'Everitt'])
+new_query = query.filter(last_name__in=['Bassler', 'Everitt'])
 for contact in new_query[:10]:
     print(' '.join(contact['first_name', 'last_name']))
 
@@ -75,9 +75,9 @@ for contact in new_query[:10]:
 # Stanford Everitt
 
 query = conn['Cases'].query()
-new_query = query.filter(case_number__lt = '7')
+new_query = query.filter(case_number__lt='7')
 for case in new_query[:10]:
-    print(' / ' .join(case['case_number', 'name', 'description']))
+    print(' / '.join(case['case_number', 'name', 'description']))
 
 # OUTPUT:
 # 1 / Having trouble adding new items /
@@ -92,7 +92,7 @@ for case in new_query[:10]:
 query = conn['Cases'].query()
 case = query[0]
 query = conn['Contacts'].query()
-query = query.filter(last_name__exact = 'Stampley')
+query = query.filter(last_name__exact='Stampley')
 contact = query[0]
 case.relate(contact)
 
@@ -108,6 +108,7 @@ contact.save()
 
 # Adding New Entries to SugarCRM
 from sugarcrm.sugarentry import SugarEntry
+
 new_contact = SugarEntry(conn['Contacts'])
 new_contact['first_name'] = 'Васіль'
 new_contact['last_name'] = 'Пупкоў'

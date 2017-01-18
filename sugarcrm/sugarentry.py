@@ -6,12 +6,12 @@ from itertools import count
 
 HTMLP = HTMLParser()
 
+
 class SugarEntry:
     """Define an entry of a SugarCRM module."""
     _hashes = defaultdict(count(1).next if hasattr(count(1), 'next') else count(1).__next__)
 
-
-    def __init__(self, module, fmap = None):
+    def __init__(self, module, fmap=None):
         """Represents a new or an existing entry.
 
         Keyword arguments:
@@ -38,7 +38,7 @@ class SugarEntry:
 
     def __unicode__(self):
         return "<SugarCRM %s entry '%s'>" % \
-                    (self._module._name.rstrip('s'), self['name'])
+               (self._module._name.rstrip('s'), self['name'])
 
     def __str__(self):
         return str(self).encode('utf-8')
@@ -46,7 +46,7 @@ class SugarEntry:
     def __contains__(self, key):
         return key in self._module._fields
 
-    def _retrieve(self, fieldlist, force = False):
+    def _retrieve(self, fieldlist, force=False):
         qstring = "%s.id = '%s'" % (self._module._table, self['id'])
         if not force:
             fieldlist = set(fieldlist) - set(self._fields.keys())
@@ -115,7 +115,7 @@ class SugarEntry:
         nvl = []
         for field in set(self._dirty_fields):
             # Define an individual name_value record.
-            nv = dict(name = field, value = self[field])
+            nv = dict(name=field, value=self[field])
             nvl.append(nv)
 
         # Use the API's set_entry to update the entry in SugarCRM.
@@ -143,7 +143,7 @@ class SugarEntry:
 
         self._module._connection.relate(self, *related, **kwargs)
 
-    def get_related(self, module, fields = None, relateby = None, links_to_fields = None):
+    def get_related(self, module, fields=None, relateby=None, links_to_fields=None):
         """Return the related entries in another module.
 
         Keyword arguments:
@@ -173,7 +173,7 @@ class SugarEntry:
                 val = field['value']
                 entry._fields[name] = HTMLP.unescape(val) if isinstance(val, basestring) else val
                 entry.related_beans = defaultdict(list)
-#                 try:
+                #                 try:
                 linked = result['relationship_list'][idx]
                 for relmod in linked:
                     for record in relmod['records']:
@@ -182,10 +182,9 @@ class SugarEntry:
                             rfield = fmap['value']
                             relentry[fname] = HTMLP.unescape(rfield) if isinstance(rfield, six.string_types) else val
                         entry.related_beans[relmod['name']].append(relentry)
-#                 except:
-#                     pass
+                        #                 except:
+                        #                     pass
 
             entries.append(entry)
 
         return entries
-
