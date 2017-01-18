@@ -106,3 +106,10 @@ case.get_related(conn['Contacts'])
 contact['birthdate'] = '1978-05-10'
 contact.save()
 
+# Adding New Entries to SugarCRM
+from sugarcrm.sugarentry import SugarEntry
+new_contact = SugarEntry(conn['Contacts'])
+new_contact['first_name'] = 'Васіль'
+new_contact['last_name'] = 'Пупкоў'
+new_contact['birthdate'] = '1978-05-10'
+new_contact.save()
