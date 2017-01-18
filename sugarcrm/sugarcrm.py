@@ -125,7 +125,7 @@ class Sugarcrm:
         try:
             result = json.loads(response.decode('utf-8'))
         except:
-            raise SugarError(response)
+            raise SugarError(response.decode('utf-8'))
         if is_error(result):
             raise SugarError(result)
         return result
